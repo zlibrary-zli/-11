@@ -11,9 +11,22 @@ cmake --build build -j
 
 生成可执行文件：`build/imgdiff`
 
-## 图形界面（Qt）
+## 图形界面（推荐）
 
-如果本机安装了 Qt6，可以额外构建桌面 GUI：`build/imgdiff_gui`。
+推荐直接使用 Python GUI，无需 Qt，适合“无脑启动”：
+
+```bash
+python3 imgdiff_gui.py
+```
+
+说明：
+- GUI 使用 Python 标准库 `tkinter`，不依赖第三方 Python 包。
+- 如果还没有 `build/imgdiff`，GUI 会提示是否自动执行构建。
+- GUI 会记住上一次输入的路径和参数，方便重复操作。
+
+## 图形界面（Qt，可选）
+
+如果本机安装了 Qt6，也可以额外构建旧版桌面 GUI：`build/imgdiff_gui`。
 
 ```bash
 cmake -S . -B build -DIMGDIFF_BUILD_GUI=ON
