@@ -1,0 +1,4 @@
+/workspace/build/CMakeFiles/imgdiff.dir
+/workspace/build/CMakeFiles/gen_test_pair.dir
+/workspace/build/CMakeFiles/edit_cache.dir
+/workspace/build/CMakeFiles/rebuild_cache.dir

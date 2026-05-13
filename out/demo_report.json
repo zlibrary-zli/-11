@@ -1,0 +1,11 @@
+{
+  "align_method": "ecc",
+  "ecc_score": 0.995935,
+  "warp": [
+    [0.999907, 0.0136531, -2.86877],
+    [-0.0136531, 0.999907, 3.13881]
+  ],
+  "diff_threshold": 1623.92,
+  "diff_pixels": 9812,
+  "diff_components": 11
+}
