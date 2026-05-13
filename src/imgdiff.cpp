@@ -377,6 +377,10 @@ struct RunConfig {
   int openK = 3;
   int closeK = 5;
   double alpha = 0.6;
+  bool saveOverlay = true;
+  bool saveMask = true;
+  bool saveRegions = true;
+  bool saveReport = true;
   bool saveAligned = true;
 };
 
@@ -472,22 +476,27 @@ static void processPair(const RunConfig& cfg, const std::string& refPath, const 
   fs::path outDir(cfg.outDir);
   ensureDir(outDir);
 
-  fs::path overlayPath = outDir / (name + "_overlay.png");
-  fs::path maskPath = outDir / (name + "_mask.png");
-  fs::path regionsPath = outDir / (name + "_regions.csv");
-  fs::path reportPath = outDir / (name + "_report.json");
-
-  if (!cv::imwrite(overlayPath.string(), overlay)) die("Failed to write: " + overlayPath.string());
-  if (!cv::imwrite(maskPath.string(), mask2)) die("Failed to write: " + maskPath.string());
-  writeRegionsCsv(regionsPath, regions);
-
+  if (cfg.saveOverlay) {
+    fs::path overlayPath = outDir / (name + "_overlay.png");
+    if (!cv::imwrite(overlayPath.string(), overlay)) die("Failed to write: " + overlayPath.string());
+  }
+  if (cfg.saveMask) {
+    fs::path maskPath = outDir / (name + "_mask.png");
+    if (!cv::imwrite(maskPath.string(), mask2)) die("Failed to write: " + maskPath.string());
+  }
+  if (cfg.saveRegions) {
+    fs::path regionsPath = outDir / (name + "_regions.csv");
+    writeRegionsCsv(regionsPath, regions);
+  }
   if (cfg.saveAligned) {
     fs::path alignedPath = outDir / (name + "_tgt_aligned.png");
     cv::Mat aligned8 = toneMapTo8U(tgtGrayAligned, 16);
     if (!cv::imwrite(alignedPath.string(), aligned8)) die("Failed to write: " + alignedPath.string());
   }
-
-  writeJsonReport(reportPath, warpFull, alignMethod, eccScore, thr, ms);
+  if (cfg.saveReport) {
+    fs::path reportPath = outDir / (name + "_report.json");
+    writeJsonReport(reportPath, warpFull, alignMethod, eccScore, thr, ms);
+  }
 }
 
 static std::unordered_map<std::string, std::string> parseArgs(int argc, char** argv) {
@@ -520,6 +529,10 @@ static void printUsage() {
   std::cout << "  --open_k <int> (morph open kernel size, default 3)\n";
   std::cout << "  --close_k <int> (morph close kernel size, default 5)\n";
   std::cout << "  --alpha <float> (overlay alpha, default 0.6)\n";
+  std::cout << "  --save_overlay 0|1 (default 1)\n";
+  std::cout << "  --save_mask 0|1 (default 1)\n";
+  std::cout << "  --save_regions 0|1 (default 1)\n";
+  std::cout << "  --save_report 0|1 (default 1)\n";
   std::cout << "  --save_aligned 0|1 (default 1)\n";
 }
 
@@ -558,6 +571,10 @@ static RunConfig buildConfigFromArgs(const std::unordered_map<std::string, std::
   cfg.openK = getInt("--open_k", cfg.openK);
   cfg.closeK = getInt("--close_k", cfg.closeK);
   cfg.alpha = getDouble("--alpha", cfg.alpha);
+  cfg.saveOverlay = getInt("--save_overlay", cfg.saveOverlay ? 1 : 0) != 0;
+  cfg.saveMask = getInt("--save_mask", cfg.saveMask ? 1 : 0) != 0;
+  cfg.saveRegions = getInt("--save_regions", cfg.saveRegions ? 1 : 0) != 0;
+  cfg.saveReport = getInt("--save_report", cfg.saveReport ? 1 : 0) != 0;
   cfg.saveAligned = getInt("--save_aligned", cfg.saveAligned ? 1 : 0) != 0;
 
   if (cfg.outDir.empty()) die("Missing required: --out");

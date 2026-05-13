@@ -11,6 +11,15 @@ cmake --build build -j
 
 生成可执行文件：`build/imgdiff`
 
+## 图形界面（Qt）
+
+如果本机安装了 Qt6，可以额外构建桌面 GUI：`build/imgdiff_gui`。
+
+```bash
+cmake -S . -B build -DIMGDIFF_BUILD_GUI=ON
+cmake --build build -j
+```
+
 ## 用法
 
 单对图片：
@@ -42,3 +51,10 @@ cmake --build build -j
 - `sample1_regions.csv`：差异区域列表（外接矩形+面积）
 - `sample1_tgt_aligned.png`：对齐后的目标图（用于快速检查对齐质量）
 - `sample1_report.json`：warp矩阵、阈值、差异像素数等
+
+输出开关（默认都为 1）：
+- `--save_overlay 0|1`
+- `--save_mask 0|1`
+- `--save_regions 0|1`
+- `--save_report 0|1`
+- `--save_aligned 0|1`

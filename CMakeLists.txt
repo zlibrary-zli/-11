@@ -8,6 +8,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(OpenCV REQUIRED)
 
+option(IMGDIFF_BUILD_GUI "Build Qt GUI (imgdiff_gui)" OFF)
+
 add_executable(imgdiff
   src/imgdiff.cpp
 )
@@ -19,3 +21,17 @@ add_executable(gen_test_pair
 )
 
 target_link_libraries(gen_test_pair PRIVATE ${OpenCV_LIBS})
+
+if(IMGDIFF_BUILD_GUI)
+  set(CMAKE_AUTOMOC ON)
+  set(CMAKE_AUTORCC ON)
+  set(CMAKE_AUTOUIC ON)
+
+  find_package(Qt6 REQUIRED COMPONENTS Widgets)
+
+  add_executable(imgdiff_gui
+    src/imgdiff_gui.cpp
+  )
+
+  target_link_libraries(imgdiff_gui PRIVATE Qt6::Widgets)
+endif()
